@@ -45,8 +45,8 @@ jobs:
     - name: Análisis estático SonarCloud
       run: |
         mvn sonar:sonar \
-          -Dsonar.projectKey=TU_ORG_ci-calidad \
-          -Dsonar.organization=TU_ORG \
+          -Dsonar.projectKey=davidelezg-lab_ci-calidad \
+          -Dsonar.organization=davidelezg-lab \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
