@@ -1,4 +1,4 @@
-name: Pipeline Multi-Stage Básico
+name: Pipeline con Reportes JUnit
 
 on:
   push:
@@ -18,14 +18,19 @@ jobs:
         distribution: temurin
         java-version: 17
 
-    - name: 3. Ver estructura del proyecto
-      run: |
-        pwd
-        ls -la
-        find . -maxdepth 3 -type f
-
-    - name: 4. Compilar proyecto
+    - name: 3. Compilar
       run: mvn compile
 
-    - name: 5. Ejecutar pruebas
+    - name: 4. Ejecutar pruebas JUnit
       run: mvn test
+
+    - name: 5. Ver reportes generados
+      run: |
+        echo "Reportes generados:"
+        ls -la target/surefire-reports
+
+    - name: 6. Subir reportes JUnit como artefacto
+      uses: actions/upload-artifact@v4
+      with:
+        name: reportes-junit
+        path: target/surefire-reports/
