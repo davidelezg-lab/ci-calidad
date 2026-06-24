@@ -1,1 +1,31 @@
-run: mvn test
+name: Pipeline Multi-Stage Básico
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 1. Descargar código
+      uses: actions/checkout@v4
+
+    - name: 2. Instalar Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 17
+
+    - name: 3. Ver estructura del proyecto
+      run: |
+        pwd
+        ls -la
+        find . -maxdepth 3 -type f
+
+    - name: 4. Compilar proyecto
+      run: mvn compile
+
+    - name: 5. Ejecutar pruebas
+      run: mvn test
