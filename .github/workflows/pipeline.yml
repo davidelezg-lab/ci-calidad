@@ -1,4 +1,4 @@
-name: Pipeline con Reportes JUnit
+name: Pipeline con Artefactos
 
 on:
   push:
@@ -18,18 +18,22 @@ jobs:
         distribution: temurin
         java-version: 17
 
-    - name: 3. Compilar
-      run: mvn compile
+    - name: 3. Compilar y ejecutar pruebas
+      run: mvn clean test
 
-    - name: 4. Ejecutar pruebas JUnit
-      run: mvn test
+    - name: 4. Generar paquete JAR
+      run: mvn package
 
-    - name: 5. Ver reportes generados
-      run: |
-        echo "Reportes generados:"
-        ls -la target/surefire-reports
+    - name: 5. Ver contenido de target
+      run: ls -la target
 
-    - name: 6. Subir reportes JUnit como artefacto
+    - name: 6. Subir JAR como artefacto
+      uses: actions/upload-artifact@v4
+      with:
+        name: aplicacion-java
+        path: target/*.jar
+
+    - name: 7. Subir reportes JUnit
       uses: actions/upload-artifact@v4
       with:
         name: reportes-junit
