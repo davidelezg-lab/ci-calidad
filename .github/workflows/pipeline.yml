@@ -1,4 +1,4 @@
-name: Pipeline con SonarQube
+name: Pipeline con SonarCloud
 
 on:
   push:
@@ -9,25 +9,58 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 1. Descargar código
+    #  1. Descargar código
+    - name: Checkout
       uses: actions/checkout@v4
 
-    - name: 2. Instalar Java
+    #  2. Instalar Java
+    - name: Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: 17
 
-    - name: 3. Compilar proyecto
+    #  3. Debug (opcional pero recomendable en clase)
+    - name: Ver estructura del proyecto
+      run: |
+        pwd
+        ls -la
+
+    #  4. Compilar
+    - name: Compilar proyecto
       run: mvn clean compile
 
-    - name: 4. Ejecutar pruebas JUnit
+    #  5. Ejecutar tests
+    - name: Ejecutar tests JUnit
       run: mvn test
 
-    - name: 5. Análisis estático con Sonar
+    #  6. Guardar reportes de test
+    - name: Subir reportes JUnit
+      uses: actions/upload-artifact@v4
+      with:
+        name: reportes-junit
+        path: target/surefire-reports/
+
+    #  7. Análisis con SonarCloud (CORREGIDO)
+    - name: Análisis estático SonarCloud
       run: |
         mvn sonar:sonar \
-          -Dsonar.projectKey=ci-calidad \
-          -Dsonar.projectName=ci-calidad \
-          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+          -Dsonar.projectKey=TU_ORG_ci-calidad \
+          -Dsonar.organization=TU_ORG \
+          -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+
+    #  8. Generar artefacto
+    - name: Generar JAR
+      run: mvn package
+
+    #  9. Subir artefacto
+    - name: Subir artefacto JAR
+      uses: actions/upload-artifact@v4
+      with:
+        name: aplicacion-java
+        path: target/*.jar
+
+    #  10. Mensaje final
+    - name: Fin pipeline
+      run: echo "Pipeline ejecutada correctamente"
