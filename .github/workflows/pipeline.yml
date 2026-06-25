@@ -30,7 +30,7 @@ jobs:
     - name: Ejecutar tests
       run: mvn test
 
-    # 5️⃣ Análisis estático
+    # 5️ Análisis estático
     - name: Análisis Sonar
       uses: SonarSource/sonarqube-scan-action@v6
       env:
