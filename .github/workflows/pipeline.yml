@@ -37,7 +37,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: https://sonarcloud.io
 
-    # 6️⃣  QUALITY GATE (CLAVE DEL EJERCICIO)
+    # 6️  QUALITY GATE (CLAVE DEL EJERCICIO)
     - name: Check Quality Gate
       uses: SonarSource/sonarqube-quality-gate-action@v1
       timeout-minutes: 5
