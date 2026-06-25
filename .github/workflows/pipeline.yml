@@ -2,7 +2,7 @@ name: Pipeline con Quality Gate
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   calidad:
