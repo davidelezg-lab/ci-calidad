@@ -1,66 +1,45 @@
-name: Pipeline con SonarCloud
+name: Pipeline con Quality Gate
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  pipeline:
+  calidad:
     runs-on: ubuntu-latest
 
     steps:
-    #  1. Descargar código
+    # 1️⃣ Descargar código
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0   #  IMPORTANTE para Sonar
 
-    #  2. Instalar Java
+    # 2️⃣ Instalar Java
     - name: Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: 17
 
-    #  3. Debug (opcional pero recomendable en clase)
-    - name: Ver estructura del proyecto
-      run: |
-        pwd
-        ls -la
-
-    #  4. Compilar
-    - name: Compilar proyecto
+    # 3️⃣ Build
+    - name: Compilar
       run: mvn clean compile
 
-    #  5. Ejecutar tests
-    - name: Ejecutar tests JUnit
+    # 4️⃣ Test
+    - name: Ejecutar tests
       run: mvn test
 
-    #  6. Guardar reportes de test
-    - name: Subir reportes JUnit
-      uses: actions/upload-artifact@v4
-      with:
-        name: reportes-junit
-        path: target/surefire-reports/
+    # 5️⃣ Análisis estático
+    - name: Análisis Sonar
+      uses: SonarSource/sonarqube-scan-action@v4
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: https://sonarcloud.io
 
-    #  7. Análisis con SonarCloud (CORREGIDO)
-    - name: Análisis estático SonarCloud
-      run: |
-        mvn sonar:sonar \
-          -Dsonar.projectKey=davidelezg-lab_ci-calidad \
-          -Dsonar.organization=davidelezg-lab \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
-
-    #  8. Generar artefacto
-    - name: Generar JAR
-      run: mvn package
-
-    #  9. Subir artefacto
-    - name: Subir artefacto JAR
-      uses: actions/upload-artifact@v4
-      with:
-        name: aplicacion-java
-        path: target/*.jar
-
-    #  10. Mensaje final
-    - name: Fin pipeline
-      run: echo "Pipeline ejecutada correctamente"
+    # 6️⃣  QUALITY GATE (CLAVE DEL EJERCICIO)
+    - name: Check Quality Gate
+      uses: SonarSource/sonarqube-quality-gate-action@v1
+      timeout-minutes: 5
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
