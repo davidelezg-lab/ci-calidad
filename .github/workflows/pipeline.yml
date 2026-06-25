@@ -1,45 +1,65 @@
-name: Pipeline con Quality Gate
+name: Pipeline Completa de Calidad
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
-  calidad:
+  ci-quality:
     runs-on: ubuntu-latest
 
     steps:
-    # 1️ Descargar código
-    - name: Checkout
+    - name: 1. Checkout
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0   #  IMPORTANTE para Sonar
+        fetch-depth: 0
 
-    # 2️ Instalar Java
-    - name: Setup Java
+    - name: 2. Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: 17
 
-    # 3️ Build
-    - name: Compilar
+    - name: 3. Mostrar estructura
+      run: |
+        echo "Directorio actual:"
+        pwd
+        echo "Archivos del proyecto:"
+        find . -maxdepth 4 -type f
+
+    - name: 4. Build
       run: mvn clean compile
 
-    # 4️ Test
-    - name: Ejecutar tests
+    - name: 5. Test JUnit
       run: mvn test
 
-    # 5️ Análisis estático
-    - name: Análisis Sonar
-      uses: SonarSource/sonarqube-scan-action@v6
+    - name: 6. Guardar reportes JUnit
+      uses: actions/upload-artifact@v4
+      with:
+        name: reportes-junit
+        path: target/surefire-reports/
+
+    - name: 7. Análisis estático con Sonar
+      uses: SonarSource/sonarqube-scan-action@v4
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: https://sonarcloud.io
 
-    # 6️  QUALITY GATE (CLAVE DEL EJERCICIO)
-    - name: Check Quality Gate
+    - name: 8. Quality Gate
       uses: SonarSource/sonarqube-quality-gate-action@v1
       timeout-minutes: 5
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: 9. Generar artefacto
+      run: mvn package
+
+    - name: 10. Publicar artefacto
+      uses: actions/upload-artifact@v4
+      with:
+        name: aplicacion-java
+        path: target/*.jar
+
+    - name: 11. Mensaje final
+      run: echo "Pipeline completada correctamente. Tests, calidad y artefacto OK."
+
