@@ -9,17 +9,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # 1️⃣ Checkout
     - name: 1. Checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
+    # 2️⃣ Java
     - name: 2. Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: 17
 
+    # 3️⃣ Debug (opcional para clase)
     - name: 3. Mostrar estructura
       run: |
         echo "Directorio actual:"
@@ -27,39 +30,40 @@ jobs:
         echo "Archivos del proyecto:"
         find . -maxdepth 4 -type f
 
-    - name: 4. Build
-      run: mvn clean compile
+    # 4️⃣ Build + Test + Sonar (TODO JUNTO ✅)
+    - name: 4. Build + Test + Sonar
+      run: mvn clean verify sonar:sonar \
+        -Dsonar.projectKey=davidelezg-lab_ci-calidad \
+        -Dsonar.organization=davidelezg-lab \
+        -Dsonar.host.url=https://sonarcloud.io \
+        -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-    - name: 5. Test JUnit
-      run: mvn test
-
-    - name: 6. Guardar reportes JUnit
+    # 5️⃣ Guardar reportes JUnit
+    - name: 5. Guardar reportes JUnit
       uses: actions/upload-artifact@v4
       with:
         name: reportes-junit
         path: target/surefire-reports/
 
-    - name: 7. Análisis estático con Sonar
-      uses: SonarSource/sonarqube-scan-action@v4
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: https://sonarcloud.io
-
-    - name: 8. Quality Gate
+    # 6️⃣ Quality Gate (CLAVE DEL EJERCICIO 💥)
+    - name: 6. Quality Gate
       uses: SonarSource/sonarqube-quality-gate-action@v1
       timeout-minutes: 5
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-    - name: 9. Generar artefacto
+    # 7️⃣ Packaging
+    - name: 7. Generar artefacto
       run: mvn package
 
-    - name: 10. Publicar artefacto
+    # 8️⃣ Publicar artefacto
+    - name: 8. Publicar artefacto
       uses: actions/upload-artifact@v4
       with:
         name: aplicacion-java
         path: target/*.jar
 
-    - name: 11. Mensaje final
-      run: echo "Pipeline completada correctamente. Tests, calidad y artefacto OK."
+    # 9️⃣ Final
+    - name: 9. Mensaje final
+      run: echo "Pipeline completada correctamente ✅ (si has llegado aquí, Quality Gate OK)"
 
