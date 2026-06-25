@@ -15,18 +15,18 @@ jobs:
       with:
         fetch-depth: 0   #  IMPORTANTE para Sonar
 
-    # 2️⃣ Instalar Java
+    # 2️ Instalar Java
     - name: Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: 17
 
-    # 3️⃣ Build
+    # 3️ Build
     - name: Compilar
       run: mvn clean compile
 
-    # 4️⃣ Test
+    # 4️ Test
     - name: Ejecutar tests
       run: mvn test
 
