@@ -30,9 +30,9 @@ jobs:
         echo "Archivos del proyecto:"
         find . -maxdepth 4 -type f
 
-    # 4️⃣ Build + Test + Sonar ✅ (VERSIÓN SEGURA)
+    # 4️⃣ Build + Test + Sonar ✅ (CORREGIDO)
     - name: 4. Build + Test + Sonar
-      run: mvn clean verify sonar:sonar -Dsonar.projectKey=davidelezg-lab_ci-calidad -Dsonar.organization=davidelezg-lab -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      run: mvn clean verify sonar:sonar -Dsonar.projectKey=ci-calidad -Dsonar.organization=davidelezg-lab -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
     # 5️⃣ Guardar reportes
     - name: 5. Guardar reportes JUnit
@@ -62,5 +62,4 @@ jobs:
     # 9️⃣ Final
     - name: 9. Mensaje final
       run: echo "Pipeline completada correctamente ✅ (si has llegado aquí, Quality Gate OK)"
-
 
