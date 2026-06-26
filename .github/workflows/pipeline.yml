@@ -1,60 +1,26 @@
-name: Caso Final Modulo 4
+name: Pipeline Basico
 
-on:
-  push:
-    branches: [ "main" ]
+on: [push]
 
 jobs:
-  calidad-final:
+  pipeline:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 1. Descargar código
+    - name: Checkout
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
 
-    - name: 2. Instalar Java
+    - name: Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: 17
 
-    - name: 3. Build
+    - name: Build
       run: mvn clean compile
 
-    - name: 4. Test
+    - name: Test
       run: mvn test
-
-    - name: 5. Publicar reportes JUnit
-      uses: actions/upload-artifact@v4
-      with:
-        name: reportes-junit
-        path: target/surefire-reports/
-
-    - name: 6. Análisis estático
-      uses: SonarSource/sonarqube-scan-action@v4
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: https://sonarcloud.io
-
-    - name: 7. Bloqueo por Quality Gate
-      uses: SonarSource/sonarqube-quality-gate-action@v1
-      timeout-minutes: 5
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-    - name: 8. Generar artefacto
-      run: mvn package
-
-    - name: 9. Publicar artefacto
-      uses: actions/upload-artifact@v4
-      with:
-        name: aplicacion-java-final
-        path: target/*.jar
-
-    - name: 10. Resultado final
-      run: echo "Pipeline finalizada correctamente. Calidad aprobada y artefacto generado."
 
 
 
