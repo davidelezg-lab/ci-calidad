@@ -30,15 +30,15 @@ jobs:
       - name: Test
         run: mvn test
 
-      # ✅ IMPORTANTE: usar ${{ }}
+      # ✅ CONDICIONES CORRECTAS
       - name: Desplegar en DEV
-        if: ${{ env.ENVIRONMENT == 'dev' }}
+        if: "${{ env.ENVIRONMENT == 'dev' }}"
         run: echo "Deploy en entorno DEV"
 
       - name: Desplegar en TEST
-        if: ${{ env.ENVIRONMENT == 'test' }}
+        if: "${{ env.ENVIRONMENT == 'test' }}"
         run: echo "Deploy en entorno TEST"
 
       - name: Desplegar en PROD
-        if: ${{ env.ENVIRONMENT == 'prod' }}
+        if: "${{ env.ENVIRONMENT == 'prod' }}"
         run: echo "Deploy en entorno PROD"
