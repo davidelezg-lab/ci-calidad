@@ -1,27 +1,57 @@
-name: Pipeline Basico
-
-on: [push]
+name: Pipeline con Calidad (Sonar) - Ejercicio2
+ 
+on:
+  push:
+    branches: [ "main" ]
 
 jobs:
-  pipeline:
+  calidad:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
+    # 1️⃣ Checkout (SIEMPRE PRIMERO)
+    - name: 1. Checkout
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0   # IMPORTANTE para Sonar
 
-    - name: Setup Java
+    # 2️⃣ Setup Java
+    - name: 2. Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: 17
 
-    - name: Build
+    # 3️⃣ Build
+    - name: 3. Build
       run: mvn clean compile
 
-    - name: Test
+    # 4️⃣ Tests
+    - name: 4. Test JUnit
       run: mvn test
 
+    # 5️⃣ Guardar reportes
+    - name: 5. Guardar reportes JUnit
+      uses: actions/upload-artifact@v4
+      with:
+        name: reportes-junit
+        path: target/surefire-reports/
 
+    # 6️⃣ Análisis con Sonar ✅
+    - name: 6. Análisis Sonar
+      uses: SonarSource/sonarqube-scan-action@v6
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: https://sonarcloud.io
 
+    # 7️⃣ Quality Gate 💥
+    - name: 7. Quality Gate
+      uses: SonarSource/sonarqube-quality-gate-action@v1
+      timeout-minutes: 5
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+    # 8️⃣ Resultado final
+    - name: 8. Resultado final
+      run: echo "Pipeline con análisis de calidad finalizado"
+``
