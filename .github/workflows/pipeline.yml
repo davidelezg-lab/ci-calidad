@@ -22,7 +22,7 @@ jobs:
           java-version: 17
 
       - name: Mostrar entorno
-        run: echo "Entorno actual: $ENVIRONMENT"
+        run: echo "Entorno actual:${{ env.ENVIRONMENT }}"
 
       - name: Build
         run: mvn clean compile
