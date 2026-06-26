@@ -34,3 +34,10 @@ jobs:
       - name: Desplegar en DEV
         if: ${{ env.ENVIRONMENT == 'dev' }}
         run: echo "Deploy en entorno DEV"
+
+      # ✅ EJERCICIO 4 (feedback)
+      - name: Resultado final
+        run: echo "Pipeline completado correctamente"
+
+      - name: Simular error
+        run: exit 1
