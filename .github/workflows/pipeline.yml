@@ -30,7 +30,7 @@ jobs:
       - name: Test
         run: mvn test
 
-      # ✅ VERSIÓN MÁS SIMPLE (SIN ERRORES YAML)
+      # ✅ CONDICIÓN CORRECTA (SIN COMILLAS)
       - name: Desplegar en DEV
-        if: env.ENVIRONMENT == 'dev'
+        if: ${{ env.ENVIRONMENT == 'dev' }}
         run: echo "Deploy en entorno DEV"
