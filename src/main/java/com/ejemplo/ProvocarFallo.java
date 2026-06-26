@@ -1,15 +1,10 @@
 public class ProvocarFallo {
     public void miMetodo() {
-        // Variables declaradas que no se usan y nombres no descriptivos (Code Smell)
-        int a; 
-        int b;
-
-        // Código duplicado o un bug evidente forzado:
-        if (true) {
-            // Esto siempre se cumple, Sonar lo detectará como código muerto/inútil
-        }
+        //  Código limpio: Se han eliminado las variables inactivas (int a, int b)
+        //  Se ha retirado el bloque 'if (true)' que generaba código muerto
         
-        // Un bug crítico: asignación de variables sin inicializar o hardcodeadas
-        a = 10 / 0; // Provoca una división por cero en ejecución si llega a pasar el test
+        // Ejemplo de lógica válida y segura:
+        int resultadoOperacion = 10 / 2; 
+        System.out.println("Operación realizada con éxito: " + resultadoOperacion);
     }
 }
