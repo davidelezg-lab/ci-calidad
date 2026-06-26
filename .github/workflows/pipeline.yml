@@ -47,4 +47,5 @@ jobs:
 
       # Dejamos la simulación de error al final para que no corte los pasos anteriores
       - name: Simular error
+        continue-on-error: true
         run: exit 1
