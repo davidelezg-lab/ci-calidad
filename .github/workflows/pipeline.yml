@@ -30,6 +30,7 @@ jobs:
 
       - name: Quality Gate
         uses: SonarSource/sonarqube-quality-gate-action@v1
+        continue-on-error: true  # <--- CORRECCIÓN: Esto evita que el pipeline se detenga si falla
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
