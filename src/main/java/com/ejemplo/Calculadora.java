@@ -20,23 +20,20 @@ public class Calculadora {
         }
         return a / b;
     }
-    public int metodoConMalaCalidad(int numero) {
-    int resultado = 0;
-
-    if (numero > 0) {
-        if (numero > 10) {
-            if (numero > 100) {
-                resultado = numero * 2;
-            } else {
-                resultado = numero + 10;
-            }
-        } else {
-            resultado = numero + 1;
-        }
-    } else {
-        resultado = -1;
+public int metodoConMalaCalidad(int numero) {
+    if (numero <= 0) {
+        return -1;
     }
 
-    return resultado;
+    if (numero > 100) {
+        return numero * 2;
+    }
+
+    if (numero > 10) {
+        return numero + 10;
+    }
+
+    return numero + 1;
 }
+
 }
