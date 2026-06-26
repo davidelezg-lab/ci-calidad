@@ -54,4 +54,3 @@ jobs:
     # 8️⃣ Resultado final
     - name: 8. Resultado final
       run: echo "Pipeline con análisis de calidad finalizado"
-``
