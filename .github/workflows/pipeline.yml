@@ -7,7 +7,7 @@ on:
 jobs:
   entornos:
     runs-on: ubuntu-latest
-
+    
     env:
       ENVIRONMENT: dev
 
@@ -30,14 +30,21 @@ jobs:
       - name: Test
         run: mvn test
 
-      # ✅ CONDICIÓN CORRECTA (SIN COMILLAS)
+      # Paso nuevo usando el secret solicitado
+      - name: Analizar con SonarCloud
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: echo "Ejecutando análisis de Sonar con el token configurado..."
+
+      # CONDICIÓN CORRECTA (SIN COMILLAS)
       - name: Desplegar en DEV
         if: ${{ env.ENVIRONMENT == 'dev' }}
         run: echo "Deploy en entorno DEV"
 
-      # ✅ EJERCICIO 4 (feedback)
+      # EJERCICIO 4 (feedback)
       - name: Resultado final
         run: echo "Pipeline completado correctamente"
 
+      # Dejamos la simulación de error al final para que no corte los pasos anteriores
       - name: Simular error
         run: exit 1
