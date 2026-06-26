@@ -7,16 +7,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Ejecutar tests
-      run: mvn test
-
+    #  1. Descarga código (SIEMPRE PRIMERO)
     - name: Checkout
       uses: actions/checkout@v4
 
+    #  2. Java
     - name: Setup Java
       uses: actions/setup-java@v4
       with:
+        distribution: temurin
         java-version: 17
+
+    #  3. Ejecutar tests
+    - name: Ejecutar tests
+      run: mvn test
+
 
 
 
