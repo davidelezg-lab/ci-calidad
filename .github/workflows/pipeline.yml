@@ -1,51 +1,38 @@
-name: EJERCICIO 3 — Gestión de entornos
+name: Pipeline Completo
 
-on:
-  push:
-    branches: [ "main" ]
+on: [push]
 
 jobs:
-  entornos:
+  calidad:
     runs-on: ubuntu-latest
-    
-    env:
-      ENVIRONMENT: dev
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 17
 
-      - name: Mostrar entorno
-        run: echo "Entorno actual:${{ env.ENVIRONMENT }}"
+    - name: Build
+      run: mvn clean compile
 
-      - name: Build
-        run: mvn clean compile
+    - name: Test
+      run: mvn test
 
-      - name: Test
-        run: mvn test
+    - name: Sonar
+      uses: SonarSource/sonarqube-scan-action@v6
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: https://sonarcloud.io
 
-      # Paso nuevo usando el secret solicitado
-      - name: Analizar con SonarCloud
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: echo "Ejecutando análisis de Sonar con el token configurado..."
+    - name: Quality Gate
+      uses: SonarSource/sonarqube-quality-gate-action@v1
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      # CONDICIÓN CORRECTA (SIN COMILLAS)
-      - name: Desplegar en DEV
-        if: ${{ env.ENVIRONMENT == 'dev' }}
-        run: echo "Deploy en entorno DEV"
+    - name: Resultado final
+      run: echo "Pipeline finalizado"
 
-      # EJERCICIO 4 (feedback)
-      - name: Resultado final
-        run: echo "Pipeline completado correctamente"
-
-      # Dejamos la simulación de error al final para que no corte los pasos anteriores
-      - name: Simular error
-        continue-on-error: true
-        run: exit 1
